@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+  <link rel="stylesheet" type="text/css" href="drag-styles.css">
+  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script type="text/javascript" src="http://www.pureexample.com/js/lib/jquery.ui.touch-punch.min.js"></script>
+
+
+  <!-- CSS -->
+  <style type="text/css">
+    .items-container {
+      display: flex;
+    }
+
+    .items-container>div {
+      margin: 10px;
+    }
+
+    .list {
+      max-width: 50%;
+      background-color: lightblue;
+      border: 1px solid gray;
+    }
+
+    .items .ui-selected {
+      background: red;
+      color: white;
+      font-weight: bold;
+    }
+
+    .items {
+      list-style-type: none;
+      margin-left: 10px;
+      padding: 0;
+      width: 20vw;
+      border: 1px solid;
+      min-height: 100px;
+    }
+
+    .g {
+      background-color: aquamarine;
+    }
+
+    .o {
+      background-color: orange;
+    }
+
+    .z {
+      background-color: violet;
+    }
+
+    .items li {
+      margin: 2px;
+      padding: 2px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .highlight {
+      border: 2px solid red;
+      font-weight: bold;
+    }
+
+    .btn-large {
+      width: 20%;
+      height: 30px;
+      background-color: rgb(8, 141, 141);
+      color: aliceblue;
+      border-radius: 5%;
+      font-size: 20px;
+    }
+  </style>
+
+  <title>Document</title>
+</head>
+<!-- HTML -->
+
+<body>
+  <h2 id="date"> Chambres pour le jour : <span id="today"></span></h2>
+
+  <div class="items-container">
+    <div>
+      <h2>Non réservé</h2>
+      <ul id="items1" class="items ">
+
+        <li class="list">ch 101</li>
+        <li class="list">ch 102</li>
+        <li class="list">ch 103</li>
+        <li class="list">ch 104</li>
+        <li class="list">ch 105</li>
+        <li class="list">ch 106</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Arrivées</h2>
+      <ul id="items2" class="items g">
+      </ul>
+
+    </div>
+
+    <div>
+      <h2>Départs</h3>
+        <ul id="items3" class="items o">
+
+
+        </ul>
+
+    </div>
+
+    <div>
+      <h2>Stay over</h4>
+        <ul id="items4" class="items z">
+
+
+        </ul>
+    </div>
+  </div>
+  <div class="items-container">
+    <canvas id="signature-canvas" width="400" height="200"></canvas>
+    <button id="clear-button">Effacer</button>
+
+
+  </div>
+  <button class="btn-large" onclick="sendData()">Send</button>
+
+  <!-- Javascript -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script type="text/javascript" src="/js/mon_script.js"></script>
+
+  <script>
+    function sendData() {
+      let arrivals = document.getElementById("items2").innerText.split('\n')
+      let departures = document.getElementById("items3").innerText.split('\n')
+      let so = document.getElementById("items4").innerText.split('\n')
+      let dataURL = signaturePad.toDataURL();
+      let data = {
+        "arrivals": arrivals,
+        "departures": departures,
+        "so": so,
+        "signature": dataURL
+      }
+      fetch('/list', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          // Rediriger l'utilisateur vers la page de résultats
+          window.location.href = '/show';
+        });
+      //console.log(signature)
+      console.log(JSON.stringify(data))
+    }
+
+    let ladate = new Date();
+    const el = document.querySelector("#today")
+    el.innerHTML = ladate.getDate() + "/" + (ladate.getMonth() + 1) + "/" + ladate.getFullYear();
+
+    $(function () {
+      $("#items1,#items2,#items3,#items4").sortable({
+        connectWith: "#items1,#items2,#items3,#items4",
+        start: function (event, ui) {
+          ui.item.toggleClass("highlight");
+        },
+        stop: function (event, ui) {
+          ui.item.toggleClass("highlight");
+          var element = document.getElementById("items1"); // or any other element
+          //console.log(element); // logs the expandable <html>…</html>
+          //console.dir(element.innerText); // logs the element’s properties and values     
+        }
+      });
+      $("#items1,#items2,#items3,#items4").disableSelection();
+
+    });
+  </script>
+</body>
+
+</html>

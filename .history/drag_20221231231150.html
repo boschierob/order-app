@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+  <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script type="text/javascript" src="http://www.pureexample.com/js/lib/jquery.ui.touch-punch.min.js"></script>
+
+
+  <!-- CSS -->
+  <style type="text/css">
+    .items-container {
+      display: flex;
+    }
+
+    .items-container>div {
+      margin: 10px;
+    }
+
+    .list {
+      max-width: 50%;
+      background-color: lightblue;
+      border: 1px solid gray;
+    }
+
+    .items .ui-selected {
+      background: red;
+      color: white;
+      font-weight: bold;
+    }
+
+    .items {
+      list-style-type: none;
+      margin-left: 10px;
+      padding: 0;
+      width: 20vw;
+      border: 1px solid;
+      min-height: 100px;
+    }
+
+    .g {
+      background-color: aquamarine;
+    }
+
+    .o {
+      background-color: orange;
+    }
+
+    .z {
+      background-color: violet;
+    }
+
+    .items li {
+      margin: 2px;
+      padding: 2px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+
+
+    .highlight {
+      border: 2px solid red;
+      font-weight: bold;
+    }
+  </style>
+
+  <title>Document</title>
+</head>
+<!-- HTML -->
+
+<body>
+  <h2 id="date"> Chambres pour le jour : <span id="today"></span></h2>
+
+  <div class="items-container">
+    <div>
+      <h2>Non réservé</h2>
+      <ul id="items1" class="items ">
+
+        <li class="list">ch 101</li>
+        <li class="list">ch 102</li>
+        <li class="list">ch 103</li>
+        <li class="list">ch 104</li>
+        <li class="list">ch 105</li>
+        <li class="list">ch 106</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Arrivées</h2>
+      <ul id="items2" class="items g">
+      </ul>
+
+    </div>
+
+    <div>
+      <h2>Départs</h3>
+        <ul id="items3" class="items o">
+
+
+        </ul>
+
+    </div>
+
+    <div>
+      <h2>Stay over</h4>
+        <ul id="items4" class="items z">
+
+
+        </ul>
+    </div>
+<button onclick="sendData()">Send</button>
+  </div>
+
+  <!-- Javascript -->
+<script>
+  function sendData(){
+    let arrivals = document.getElementById("items2")
+    let departures = document.getElementById("items3")
+    let so = document.getElementById("items4")
+    let data = {
+      "arrivals" : arrivals,
+      "departures": depature,
+      "so" : so
+    }
+    console.log(data);
+  }
+  let ladate = new Date();
+  const el = document.querySelector("#today")
+  el.innerHTML = ladate.getDate() + "/" + (ladate.getMonth() + 1) + "/" + ladate.getFullYear();
+
+  $(function () {
+    $("#items1,#items2,#items3,#items4").sortable({
+      connectWith: "#items1,#items2,#items3,#items4",
+      start: function (event, ui) {
+        ui.item.toggleClass("highlight");
+      },
+      stop: function (event, ui) {
+        ui.item.toggleClass("highlight");
+        var element = document.getElementById("items1"); // or any other element
+        console.log(element); // logs the expandable <html>…</html>
+        console.dir(element.innerText); // logs the element’s properties and values     
+      }
+    });
+    $("#items1,#items2,#items3,#items4").disableSelection();
+
+  });
+</script>
+</body>
+
+</html>
+
+
+
